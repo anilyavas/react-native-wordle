@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
 import { StyleSheet, Text, View, SafeAreaView, ScrollView } from 'react-native';
-import { colors } from './src/constants';
+import { colors, CLEAR, ENTER } from './src/constants';
 import Keyboard from './src/components/Keyboard';
 
 const NUMBER_OF_TRIES = 6;
@@ -23,8 +23,48 @@ export default function App() {
 
   const onKeyPressed = (key) => {
     const updatedRows = copyArray(rows);
-    rows[curRow][curCol] = key;
-    setRows(updatedRows);
+
+    if (key === CLEAR) {
+      const prevCol = curCol - 1;
+      if (prevCol >= 0) {
+        updatedRows[curRow][prevCol] = '';
+        setRows(updatedRows);
+        setCurCol(prevCol);
+      }
+      return;
+    }
+
+    if (key === ENTER) {
+      if (curCol === rows[0].length) {
+        setCurRow(curRow + 1);
+        setCurCol(0);
+      }
+
+      return;
+    }
+
+    if (curCol < rows[0].length) {
+      updatedRows[curRow][curCol] = key;
+      setRows(updatedRows);
+      setCurCol(curCol + 1);
+    }
+  };
+
+  const isCellActive = (row, col) => {
+    return row === curRow && col === curCol;
+  };
+
+  const getCellBGColor = (letter, row, col) => {
+    if (row >= curRow) {
+      return colors.black;
+    }
+    if (letter === letters[col]) {
+      return colors.primary;
+    }
+    if (letters.includes(letter)) {
+      return colors.secondary;
+    }
+    return colors.darkgrey;
   };
 
   return (
@@ -32,11 +72,22 @@ export default function App() {
       <StatusBar style='light' />
       <Text style={styles.title}>WORDLE</Text>
       <ScrollView style={styles.map}>
-        {rows.map((row) => (
-          <View style={styles.row}>
-            {row.map((cell) => (
-              <View style={styles.cell}>
-                <Text style={styles.cellText}>{cell.toUpperCase()}</Text>
+        {rows.map((row, i) => (
+          <View key={`row-${i}`} style={styles.row}>
+            {row.map((letter, j) => (
+              <View
+                key={`cell-${j}`}
+                style={[
+                  styles.cell,
+                  {
+                    borderColor: isCellActive(i, j)
+                      ? colors.grey
+                      : colors.darkgrey,
+                    backgroundColor: getCellBGColor(letter, i, j),
+                  },
+                ]}
+              >
+                <Text style={styles.cellText}>{letter.toUpperCase()}</Text>
               </View>
             ))}
           </View>
