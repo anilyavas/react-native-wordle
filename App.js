@@ -27,18 +27,21 @@ export default function App() {
 
   const [curRow, setCurRow] = useState(0);
   const [curCol, setCurCol] = useState(0);
+  const [gameState, setGameState] = useState('playing');
 
   useEffect(() => {
-    if (curCol > 0) {
+    if (curRow > 0) {
       checkGameState();
     }
   }, [curRow]);
 
   const checkGameState = () => {
     if (checkIfWon()) {
-      Alert.alert('Huraaay', 'You won!');
+      Alert.alert('You won!');
+      setGameState('won');
     } else if (checkIfLost()) {
-      Alert.alert('Heh', 'Try again tomorrow!');
+      Alert.alert('Try again tomorrow!');
+      setGameState('lost');
     }
   };
 
@@ -53,6 +56,9 @@ export default function App() {
   };
 
   const onKeyPressed = (key) => {
+    if (gameState !== 'playing') {
+      return;
+    }
     const updatedRows = copyArray(rows);
 
     if (key === CLEAR) {
