@@ -8,7 +8,7 @@ import {
   ScrollView,
   Alert,
 } from 'react-native';
-import { colors, CLEAR, ENTER } from './src/constants';
+import { colors, CLEAR, ENTER, colorsToEmoji } from './src/constants';
 import Keyboard from './src/components/Keyboard';
 
 const NUMBER_OF_TRIES = 6;
@@ -43,6 +43,13 @@ export default function App() {
       Alert.alert('Try again tomorrow!');
       setGameState('lost');
     }
+  };
+
+  const shareScore = () => {
+    const textShare = rows.map((row, i) =>
+      row.map((cell, j) => colorsToEmoji[getCellBGColor(i, j)]).join(',')
+    );
+    console.log(textShare);
   };
 
   const checkIfWon = () => {
