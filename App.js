@@ -89,7 +89,7 @@ export default function App() {
       .filter((row) => row)
       .join('\n');
     const textToShare = `Wordle  \n${textMap}`;
-    Clipboard.setString(textToShare);
+    Clipboard.setStringAsync(textToShare);
     Alert.alert('Copied successfully', 'Share your score on your social media');
   };
 
