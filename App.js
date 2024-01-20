@@ -10,8 +10,7 @@ import {
 } from 'react-native';
 import { colors, CLEAR, ENTER, colorsToEmoji } from './src/constants';
 import Keyboard from './src/components/Keyboard';
-import { Clipboard } from 'expo-clipboard';
-
+import * as Clipboard from 'expo-clipboard';
 const NUMBER_OF_TRIES = 6;
 
 const copyArray = (arr) => {
@@ -90,7 +89,7 @@ export default function App() {
       .filter((row) => row)
       .join('\n');
     const textToShare = `Wordle  \n${textMap}`;
-    Clipboard.setString(textShare);
+    Clipboard.setString(textToShare);
     Alert.alert('Copied successfully', 'Share your score on your social media');
   };
 
