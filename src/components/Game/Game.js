@@ -42,7 +42,7 @@ const Game = () => {
   }, []);
 
   const presistState = async () => {
-    //  white all the state variables in async storage
+    //  write all the state variables in async storage
     const data = {
       rows,
       curRow,
