@@ -7,10 +7,34 @@ import words from '../../words';
 import styles from './Game.styles';
 import { copyArray, getDayOfTheYear } from '../../utils';
 import AsyncSorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const NUMBER_OF_TRIES = 6;
 
 const dayOfTheYear = getDayOfTheYear();
+
+{
+  /* const game = {
+  day_15: {
+    rows: [[], []],
+    curRow: 4,
+    curCol: 2,
+    gameState: 'won',
+  },
+  day_16: {
+    rows: [[], []],
+    curRow: 4,
+    curCol: 2,
+    gameState: 'lost',
+  },
+  day_17: {
+    rows: [[], []],
+    curRow: 4,
+    curCol: 2,
+    gameState: 'won',
+  },
+}; */
+}
 
 const Game = () => {
   const word = words[dayOfTheYear];
@@ -43,14 +67,25 @@ const Game = () => {
 
   const presistState = async () => {
     //  write all the state variables in async storage
-    const data = {
+    const key = `day-${dayOfTheYear} `;
+    const dataForToday = {
       rows,
       curRow,
       curCol,
       gameState,
     };
-    const dataString = JSON.stringify(data);
-    await AsyncSorage.setItem('@game', dataString);
+    try {
+      let existingStateString = await AsyncStorage.getItem('@game');
+      let existingState = existingStateString
+        ? JSON.parse(existingStateString)
+        : {};
+
+      existingState[key] = dataForToday;
+      const dataString = JSON.stringify(existingState);
+      await AsyncSorage.setItem('@game', dataString);
+    } catch (e) {
+      console.log('Failed to write data to async storage', e);
+    }
   };
 
   const readState = async () => {
